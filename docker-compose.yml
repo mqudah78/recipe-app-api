@@ -1,0 +1,13 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        dev: true
+    container_name: recipe_app_web
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: always
