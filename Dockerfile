@@ -18,20 +18,26 @@ ARG dev=false
 # Install dependencies in a virtual environment
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        postgresql-client \
+        build-essential \
+        libpq-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ "$dev" = "true" ]; then \
         /py/bin/pip install -r /tmp/requirements.dev.txt; \
     fi && \
-    rm -rf /tmp/requirements*
+    rm -rf /var/lib/apt/lists/* /tmp/requirements*
 
 # Copy app source code
 COPY ./app /app
 
+# Expose port 8000
 EXPOSE 8000
 
 # Create a non-root user
 RUN adduser --disabled-password --no-create-home django-user
 
+# Use the non-root user
 USER django-user
 
 # Use the virtual environment by default
